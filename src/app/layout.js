@@ -1,5 +1,11 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+import "primereact/resources/primereact.css";
+import "primeicons/primeicons.css";
+import Header from "@/components/header";
+import "@flaticon/flaticon-uicons/css/all/all.css";
+import { PrimeReactProvider } from "primereact/api";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,11 +24,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className="light">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900`}
       >
-        {children}
+        <PrimeReactProvider>
+          <Header />
+          {children}
+        </PrimeReactProvider>
       </body>
     </html>
   );
