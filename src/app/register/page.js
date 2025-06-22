@@ -1,10 +1,18 @@
 "use client";
 import { API_ENDPOINTS } from "@/config/api";
 import { apiHandler } from "@/utils/apiHandler";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-
+const dummyPic =
+  "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80";
 export default function RegisterPage() {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const router = useRouter();
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    profile_picture: dummyPic,
+  });
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
@@ -18,14 +26,17 @@ export default function RegisterPage() {
     setError("");
     setSuccess(false);
     try {
-      const res = await apiHandler.post(API_ENDPOINTS.auth.register, form);
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.error || "Registration failed");
-        return;
-      }
-      setSuccess(true);
-      setForm({ name: "", email: "", password: "" });
+      const res = await apiHandler
+        .post(API_ENDPOINTS.auth.register, form)
+        .then((res) => {
+          setSuccess(true);
+          setForm({ name: "", email: "", password: "" });
+          router.push("/login");
+        })
+        .catch((err) => {
+          setError(err.message || "Registration failed");
+          return;
+        });
     } catch (err) {
       setError("Network error");
     }

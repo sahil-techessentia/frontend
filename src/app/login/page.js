@@ -1,7 +1,5 @@
 "use client";
-import { API_ENDPOINTS } from "@/config/api";
 import userStore from "@/store/userStore";
-import { apiHandler } from "@/utils/apiHandler";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -16,12 +14,13 @@ export default function LoginPage() {
     e.preventDefault();
     setSuccess(false);
     try {
-      await loginUser(data);
-      if (!loading && !error) {
-        setSuccess(true);
-        e.target.reset();
-        router.push("/");
-      }
+      await loginUser(data).then((res) => {
+        if (!loading) {
+          setSuccess(true);
+          e.target.reset();
+          router.push("/");
+        }
+      });
     } catch (err) {
       error(err.message);
       throw err;

@@ -3,32 +3,11 @@
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import blogStore from "@/store/blogStore";
+import userStore from "@/store/userStore";
 const dummyPic =
   "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80";
 // Dummy data
 
-const recommendedUsers = [
-  {
-    name: "Tony Hart",
-    username: "@tonyhart123",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-  {
-    name: "Tony Hart",
-    username: "@tonyhart123",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-  {
-    name: "Tony Hart",
-    username: "@tonyhart123",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-  {
-    name: "Tony Hart",
-    username: "@tonyhart123",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-  },
-];
 const ads = [
   {
     id: 1,
@@ -94,14 +73,14 @@ function BlogCard({ post }) {
         </div>
         <span
           className={`ml-auto text-xs px-2 py-1 rounded font-bold ${
-            post?.tag === "post"
+            post?.tags === "post"
               ? "bg-green-100 text-green-700"
-              : post?.tag === "fund raising"
+              : post?.tags === "fund raising"
               ? "bg-blue-100 text-blue-700"
               : "bg-orange-100 text-orange-700"
           }`}
         >
-          {post?.tag}
+          {post?.tags}
         </span>
       </div>
       {/* {post?.image && ( */}
@@ -163,25 +142,32 @@ function BlogCard({ post }) {
 }
 
 function RecommendedUsers() {
+  const { users, loading, error, getAllUsers } = userStore();
+  const dummyPic =
+    "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80";
+  useEffect(() => {
+    getAllUsers();
+  }, [getAllUsers]);
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-6">
       <h3 className="font-semibold mb-3">Recommended Users</h3>
-      {recommendedUsers.map((user, idx) => (
+      {users.map((user, idx) => (
         <div
           key={idx}
           className="flex items-center justify-between mb-3 last:mb-0"
         >
           <div className="flex items-center gap-2">
             <img
-              src={user.avatar}
+              src={user.profile_picture || dummyPic}
               alt={user.name}
               className="w-8 h-8 rounded-full"
             />
             <div>
               <div className="font-medium text-gray-800 text-sm">
-                {user.name}
+                {user.name}{" "}
+                {/* <span className="text-xs text-gray-400">@{user.name}</span> */}
               </div>
-              <div className="text-xs text-gray-400">{user.username}</div>
+              <div className="text-xs text-gray-400">@{user.name}</div>
             </div>
           </div>
           <button className="bg-pink-100 text-pink-600 px-3 py-1 rounded text-xs font-semibold">

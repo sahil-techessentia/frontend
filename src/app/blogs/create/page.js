@@ -4,7 +4,8 @@ import blogStore from "@/store/blogStore";
 import { apiHandler } from "@/utils/apiHandler";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-
+const dummyPic =
+  "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80";
 const TAGS = ["post", "fund raising", "poll"];
 
 export default function CreateBlogPage() {
@@ -12,8 +13,8 @@ export default function CreateBlogPage() {
   const [form, setForm] = useState({
     title: "",
     description: "",
-    image: "",
-    tag: "post",
+    images: [dummyPic],
+    tags: "post",
     // poll: [""],
   });
   const [success, setSuccess] = useState(false);
@@ -59,7 +60,7 @@ export default function CreateBlogPage() {
         setUploading(false);
         return;
       }
-      setForm((prev) => ({ ...prev, image: data?.url }));
+      setForm((prev) => ({ ...prev, images: [...prev.images, data?.url] }));
     } catch (err) {
       setError("Image upload failed");
     }
@@ -70,7 +71,11 @@ export default function CreateBlogPage() {
     e.preventDefault();
     // setSuccess(true);
     // For now, just log the form data
-    await createBlog(form);
+    const formData = {
+      ...form,
+      images: JSON.stringify(form.images),
+    };
+    await createBlog(formData);
     router.push("/blogs");
   };
 
@@ -121,9 +126,9 @@ export default function CreateBlogPage() {
             {uploading && (
               <div className="text-xs text-gray-500 mt-1">Uploading...</div>
             )}
-            {form.image && !uploading && (
+            {form.images && !uploading && (
               <img
-                src={form.image}
+                src={form.images[0]}
                 alt="Preview"
                 className="mt-2 rounded max-h-40 border"
               />
@@ -133,7 +138,7 @@ export default function CreateBlogPage() {
             <label className="block font-medium mb-1">Tag</label>
             <select
               name="tag"
-              value={form.tag}
+              value={form.tags}
               onChange={handleChange}
               className="w-full border rounded px-3 py-2"
             >
@@ -144,7 +149,7 @@ export default function CreateBlogPage() {
               ))}
             </select>
           </div>
-          {form.tag === "POLL" && (
+          {form.tags === "poll" && (
             <div>
               <label className="block font-medium mb-1">Poll Options</label>
               {form.poll.map((option, idx) => (

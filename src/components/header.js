@@ -7,7 +7,7 @@ import Notifications from "./Notifications";
 import useNotificationStore from "@/store/notificationStore";
 
 export default function Header() {
-  const { user, getUser } = userStore();
+  const { user, getUser, logoutUser } = userStore();
   const { notifications, unreadCount, getNotifications } =
     useNotificationStore();
 
@@ -57,6 +57,18 @@ export default function Header() {
             {user?.name[0]}
           </span>
           <span className="text-pink-600 font-bold">{user?.name}</span>{" "}
+          <button
+            onClick={() => {
+              logoutUser();
+              window.location.href = "/login";
+            }}
+            className="p-2 rounded-full hover:bg-gray-100"
+          >
+            <i
+              className="fi fi-rr-sign-out-alt text-pink-600"
+              style={{ fontSize: "1.5rem" }}
+            ></i>
+          </button>
         </div>
       ) : (
         <div className="flex gap-4">
